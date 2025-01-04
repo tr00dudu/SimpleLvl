@@ -21,8 +21,8 @@ Each element is designed to be simple, compact, and fit the wow theme asthetics.
 
 ### Easy Update Options
 
-*[GitAddonsManager](https://woblight.gitlab.io/overview/gitaddonsmanager/).
-*TurtleWoW Launcher
+* [GitAddonsManager](https://woblight.gitlab.io/overview/gitaddonsmanager/).
+* TurtleWoW Launcher
 
 ### Manual
 
