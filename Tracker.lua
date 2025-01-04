@@ -427,6 +427,7 @@ local function InitializeTracker()
             -- Calculate new scale based on mouse movement
             local newScale = math.max(0.5, math.min(3, Tracker.e.startScale + (diffX / 200)))
             Tracker.e:ScaleTracker(newScale)
+            ShowSLMessage(string.format("Tracker scaled to %.1f.", newScale), 3)
         end
     end)
 
@@ -569,7 +570,6 @@ function Tracker.e:ScaleTracker(newScale)
 
     SLDatastore.data[SLProfile].Store.trackerScale = newScale
 
-    ShowSLMessage(string.format("Tracker scaled to %.1f.", newScale), 3)
 end
 
 function Tracker.e:ResetTracker()
@@ -622,6 +622,7 @@ function Tracker.e.Commands(msg)
     elseif command == "scale" then
         if tonumber(subCommand) then
             Tracker.e:ScaleTracker(tonumber(subCommand))
+            ShowSLMessage(string.format("Tracker scaled to %.1f.", tonumber(subCommand), 3)
         else
             SL:Print("Usage: /sl scale <number> (e.g., /sl scale 1.5)")
         end
