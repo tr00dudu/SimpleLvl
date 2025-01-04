@@ -622,7 +622,7 @@ function Tracker.e.Commands(msg)
     elseif command == "scale" then
         if tonumber(subCommand) then
             Tracker.e:ScaleTracker(tonumber(subCommand))
-            ShowSLMessage(string.format("Tracker scaled to %.1f.", tonumber(subCommand), 3)
+            ShowSLMessage(string.format("Tracker scaled to %.1f.", tonumber(subCommand), 3))
         else
             SL:Print("Usage: /sl scale <number> (e.g., /sl scale 1.5)")
         end
