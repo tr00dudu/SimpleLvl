@@ -37,8 +37,8 @@ Each element is designed to be simple, compact, and fit the wow theme asthetics.
 
 * Moveable, Hideable, Scaleable, Experience tracker
 * Kills needed to level up
-  1.
-  2.
+> 1.
+> 2.
 * Quests completion needed to level up
 * Experience information
 
