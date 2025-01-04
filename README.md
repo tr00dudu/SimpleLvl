@@ -119,7 +119,7 @@ Each element is designed to be simple, compact, and fit the wow theme asthetics.
 
 </table>
 
+<img src="Screenshots/experience.png" width="250" float="right" align="right">
 <img src="Screenshots/killstats.png" width="250" float="left" align="left">
 <img src="Screenshots/queststats.png" width="250" float="center" align="center">
-<img src="Screenshots/experience.png" width="250" float="right" align="right">
 
