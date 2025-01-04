@@ -40,11 +40,18 @@ Each element is designed to be simple, compact, and fit the wow theme asthetics.
 <br>
 
 * Kills needed to level up
-> 1.
->
+> 1. Kills
+> 2. Kills this session
+> 3. Kill Per Hour
 
 <br>
 
 * Quests completion needed to level up
+> 1. Kills
+> 2. Kills this session
+> 3. Kill Per Hour
+
+<br>
+
 * Experience information
 
