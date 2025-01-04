@@ -119,13 +119,5 @@ Each element is designed to be simple, compact, and fit the wow theme asthetics.
 
 </table>
 
-
-* Quests completion needed to level up
-> 1. Kills
-> 2. Kills this session
-> 3. Kill Per Hour
-
-<br>
-
-* Experience information
+<img src="Screenshots/killstats.png" width="150" float="left" align="left">
 
