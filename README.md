@@ -31,5 +31,14 @@ Each element is designed to be simple, compact, and fit the wow theme asthetics.
 1. [Download SimpleLvl](https://github.com/Beardedrasta/SimpleLvl/archive/refs/heads/main.zip).
 2. Extract the zip file to your addon directory `TurtleWoW\Interface\Addons`.
 3. Rename the folder `SimpleLvl-main` folder to `SimpleLvl`.
-4. Ensure the structure is `Interface\Addons\SimpleLvl\SimpleLvl.toc`. 
+4. Ensure the structure is `Interface\Addons\SimpleLvl\SimpleLvl.toc`.
+
+## Features
+
+* Moveable, Hideable, Scaleable, Experience tracker
+* Kills needed to level up
+  1.
+  2.
+* Quests completion needed to level up
+* Experience information
 
