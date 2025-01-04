@@ -33,6 +33,15 @@ Each element is designed to be simple, compact, and fit the wow theme asthetics.
 3. Rename the folder `SimpleLvl-main` folder to `SimpleLvl`.
 4. Ensure the structure is `Interface\Addons\SimpleLvl\SimpleLvl.toc`.
 
+## Commands
+
+* `/sl` - display list of commands
+* `/sl toggle` - hide / show tracker frame
+* `/sl lock` - locks tracker in place
+* `/sl ttswap` - swaps the tooltip (left > right)
+* `/sl scale <number>` - scales the frame to set amount
+
+
 ## Features
 
 <table>
