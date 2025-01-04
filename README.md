@@ -40,6 +40,21 @@ Each element is designed to be simple, compact, and fit the wow theme asthetics.
 <tr>
 <td>
 
+### Tracker Frame
+
+</td>
+<td>
+
+* Moveable
+* Hideable
+* Scaleable
+
+</td>
+</tr>
+
+<tr>
+<td>
+
 ### Kills
 
 </td>
