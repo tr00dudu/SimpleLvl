@@ -9,7 +9,7 @@
 
 The goal of SimpleLvl is to allow the user the to  be able visualize the player
 experience collected, vanilla is a long grind and sometimes you just want to be
-able to keep track of when that next big golden glow is going to arrive.
+able to keep track of when that next big golden glow is going to arrive. DING!!
 
 Each element is designed to be simple, compact, and fit the wow theme asthetics.
 
