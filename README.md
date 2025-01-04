@@ -35,6 +35,18 @@ Each element is designed to be simple, compact, and fit the wow theme asthetics.
 
 ## Features
 
+<table>
+
+<tr>
+<td>
+
+### Auction and Mail
+
+</td>
+<td>
+
+</table>
+
 * Moveable, Hideable, Scaleable, Experience tracker
 
 <br>
