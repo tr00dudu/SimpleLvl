@@ -1,4 +1,4 @@
-<img src="Screenshots/tracker.png" float="right" align="right">
+<img src="Screenshots/tracker.png" width="300" float="right" align="right">
 
 <h1>
     <img src="Screenshots/title.png" width="304" align="left" alt="SimpleLvl">
