@@ -1,4 +1,5 @@
 <h1>
-<img src="Screenshots/title.png" width="304" align="left" alt="SimpleLvl">
-<div width="100%">&nbsp;</div>
+    <img src="Screenshots/title.png" width="304" align="left" alt="SimpleLvl">
+    SimpleLvl Title
 </h1>
+<div style="clear: both; width: 100%;">&nbsp;</div>
