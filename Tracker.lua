@@ -76,9 +76,6 @@ local function InitializeTracker()
         end
     end)
 
-    Tracker.track:SetScript("OnShow", function()
-        this:SetPoint(unpack(SLDatastore.data[SLProfile].Store.trackerPos))
-    end)
 
     Tracker.track:SetScript("OnHide", function()
 
@@ -91,13 +88,10 @@ local function InitializeTracker()
     Tracker.track:SetScript("OnMouseUp", function()
         this:StopMovingOrSizing()
 
-        -- Grab the anchor info
-        local point, relativeTo, relativePoint, xOfs, yOfs = this:GetPoint()
 
-        -- Some prefer storing 'UIParent' explicitly
+        local point, relativeTo, relativePoint, xOfs, yOfs = this:GetPoint()
         local parentName = "UIParent"
 
-        -- Save it
         SLDatastore.data[SLProfile].Store.trackerPos = {
             point = point,
             parentName = parentName,
@@ -134,6 +128,7 @@ local function InitializeTracker()
     local close = CreateFrame("Button", fn .. "CloseButton", Tracker.track, "UIPanelCloseButton")
     close:SetPoint("TOPRIGHT", Tracker.track, 4, 4)
     close:SetScript("OnClick", function()
+        SLDatastore.data[SLProfile].Store.toggle = false
         Tracker.track:Hide()
     end)
 
@@ -569,11 +564,9 @@ function Tracker.e:ScaleTracker(newScale)
 
     frame:SetScale(newScale)
 
-    -- Reposition the frame to maintain its visual position
     frame:ClearAllPoints()
     frame:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", frameX / newScale, frameY / newScale)
 
-    -- Save the new scale
     SLDatastore.data[SLProfile].Store.trackerScale = newScale
 
     ShowSLMessage(string.format("Tracker scaled to %.1f.", newScale), 3)
@@ -610,6 +603,14 @@ function Tracker.e:ResetTracker()
     ShowSLMessage("Tracker values reset to defaults.", 3)
 end
 
+function Tracker.e:Toggle()
+    if SLDatastore.data[SLProfile].Store.toggle == true then
+        Tracker.track:Show()
+    else
+        Tracker.track:Hide()
+    end
+end
+
 function Tracker.e.Commands(msg)
     msg = string.lower(msg);
     local command, subCommand = SL.util.GetCommand(msg);
@@ -624,6 +625,9 @@ function Tracker.e.Commands(msg)
         else
             SL:Print("Usage: /sl scale <number> (e.g., /sl scale 1.5)")
         end
+    elseif command == "toggle" then
+        SLDatastore.data[SLProfile].Store.toggle = not SLDatastore.data[SLProfile].Store.toggle
+        Tracker.e:Toggle()
     elseif command == "reset" then
         Tracker.e:ResetTracker()
         ShowSLMessage("Tracker has been reset")
