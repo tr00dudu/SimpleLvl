@@ -40,10 +40,17 @@ Each element is designed to be simple, compact, and fit the wow theme asthetics.
 <tr>
 <td>
 
-### Auction and Mail
+### Kills
 
 </td>
 <td>
+
+* Kill to level
+* Kills this session
+* Kills per hour
+
+</td>
+</tr>
 
 </table>
 
