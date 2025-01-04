@@ -8,6 +8,7 @@
 <br><sup><small>Not for Classic or Retail!.</small></sup>
 
 <br>
+<br>
 
 The goal of SimpleLvl is to allow the user the to  be able visualize the player
 experience collected, vanilla is a long grind and sometimes you just want to be
