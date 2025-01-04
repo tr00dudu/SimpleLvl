@@ -118,7 +118,7 @@ function SimpleLvl:GetTexture(string)
 end
 
 function SimpleLvl:Print(msg)
-    DEFAULT_CHAT_FRAME:AddMessage("Simple: |cff1a9fc0Lvl|cFFFFFFFF: " .. msg)
+    DEFAULT_CHAT_FRAME:AddMessage("Simple |cff1a9fc0Lvl|cFFFFFFFF: " .. msg)
 end
 
 SimpleLvl:Init()

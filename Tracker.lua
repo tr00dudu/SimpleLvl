@@ -633,7 +633,7 @@ function Tracker.e.Commands(msg)
         Tracker.e:ResetTracker()
         ShowSLMessage("Tracker has been reset")
     else
-        SL:Print("/sl |cff1a9fc0lock|r, |cff1a9fc0ttswap|r, |cff1a9fc0scale <number>|r")
+        SL:Print("/sl |cff1a9fc0toggle|r, |cff1a9fc0lock|r, |cff1a9fc0ttswap|r, |cff1a9fc0scale <number>|r,")
     end
 end
 
