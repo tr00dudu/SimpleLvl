@@ -16,6 +16,8 @@ able to keep track of when that next big golden glow is going to arrive. DING!!
 
 Each element is designed to be simple, compact, and fit the wow theme asthetics.
 
+<br>
+<br>
 
 ## Installation
 
