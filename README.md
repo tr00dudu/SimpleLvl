@@ -4,7 +4,7 @@
 </h1>
 <img src="Screenshots/tracker.png" width="150" float="right" align="right">
 
-> **A simple expereince tracking addon for World of Warcraft 1.17.1 Turlte WoW giving you the freedom of simplicity**
+> **A simple expereince tracking addon for World of Warcraft 1.17.1 Turtle WoW giving you the freedom of simplicity**
 <br><sup><small>Not for Classic or Retail!.</small></sup>
 
 <br>
@@ -40,6 +40,7 @@ Each element is designed to be simple, compact, and fit the wow theme asthetics.
 * `/sl lock` - locks tracker in place
 * `/sl ttswap` - swaps the tooltip (left > right)
 * `/sl scale <number>` - scales the frame to set amount
+* `/sl min` - toggles minimal mode (removes buttons and background elements)
 
 
 ## Features
@@ -57,6 +58,7 @@ Each element is designed to be simple, compact, and fit the wow theme asthetics.
 * Moveable
 * Hideable
 * Scaleable
+* Minimal mode option
 
 </td>
 </tr>
