@@ -386,7 +386,7 @@ local function InitializeTracker()
                     Tracker.e:ResetTracker()
                     ShowSLMessage("Tracker has been reset")
                 elseif arg1 == "RightButton" then
-                    SL:Print("/sl |cff1a9fc0lock|r, |cff1a9fc0ttswap|r, |cff1a9fc0scale <number>|r")
+                    SL:Print("/sl |cff1a9fc0toggle|r, |cff1a9fc0lock|r, |cff1a9fc0ttswap|r, |cff1a9fc0scale <number>|r, |cff1a9fc0min|r")
                 end
             end)
         end
@@ -632,13 +632,79 @@ function Tracker.e.Commands(msg)
     elseif command == "reset" then
         Tracker.e:ResetTracker()
         ShowSLMessage("Tracker has been reset")
+    elseif command == "min" then
+        SLDatastore.data[SLProfile].Store.minimal = not SLDatastore.data[SLProfile].Store.minimal
+        Tracker.e:UpdateMinimalMode()
+        ShowSLMessage("Minimal mode " .. (SLDatastore.data[SLProfile].Store.minimal and "enabled" or "disabled"))
     else
-        SL:Print("/sl |cff1a9fc0toggle|r, |cff1a9fc0lock|r, |cff1a9fc0ttswap|r, |cff1a9fc0scale <number>|r,")
+        SL:Print("/sl |cff1a9fc0toggle|r, |cff1a9fc0lock|r, |cff1a9fc0ttswap|r, |cff1a9fc0scale <number>|r, |cff1a9fc0min|r")
+    end
+end
+
+function Tracker.e:UpdateMinimalMode()
+    if SLDatastore.data[SLProfile].Store.minimal then
+        -- Hide background elements
+        Tracker.track:SetBackdrop(nil)
+        Tracker.track.name:Hide()
+        Tracker.track.close:Hide()
+        _G[fn .. "ResizeButton"]:Hide()
+        
+        -- Adjust button positions for minimal mode
+        local prevButton
+        for i = 1, 4 do
+            local button = _G[fn .. "TrackerButton" .. bn[i]]
+            if button then
+                button:ClearAllPoints()
+                if i == 1 then
+                    button:SetPoint("TOP", Tracker.track, "TOP", 0, 0)
+                else
+                    button:SetPoint("TOP", prevButton, "BOTTOM", 0, -5)
+                end
+                prevButton = button
+            end
+        end
+    else
+        -- Restore normal mode
+        Tracker.track:SetBackdrop({
+            bgFile = SL:GetTexture("Background"),
+            edgeFile = SL:GetTexture("Frame"),
+            tile = true,
+            tileSize = 128,
+            edgeSize = 32,
+            insets = {
+                left = 5,
+                right = 5,
+                top = 22,
+                bottom = 5
+            },
+        })
+        Tracker.track.name:Show()
+        Tracker.track.close:Show()
+        _G[fn .. "ResizeButton"]:Show()
+        
+        -- Restore original button positions
+        local prevButton
+        for i = 1, 4 do
+            local button = _G[fn .. "TrackerButton" .. bn[i]]
+            if button then
+                button:ClearAllPoints()
+                if i == 1 then
+                    button:SetPoint("TOP", Tracker.track, "TOP", 2, -25)
+                else
+                    button:SetPoint("TOP", prevButton, "BOTTOM", 0, -5)
+                end
+                prevButton = button
+            end
+        end
     end
 end
 
 function SLLoadTracker()
     InitializeTracker()
+    -- Apply minimal mode if it was enabled
+    if SLDatastore.data[SLProfile].Store.minimal then
+        Tracker.e:UpdateMinimalMode()
+    end
 end
 
 Tracker.e:RegisterEvent("PLAYER_ENTERING_WORLD")
