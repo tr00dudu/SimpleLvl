@@ -41,6 +41,7 @@ Each element is designed to be simple, compact, and fit the wow theme asthetics.
 * `/sl ttswap` - swaps the tooltip (left > right)
 * `/sl scale <number>` - scales the frame to set amount
 * `/sl min` - toggles minimal mode (removes buttons and background elements)
+* `/sl announce` - toggles kill XP announcements in the center of screen
 
 
 ## Features
