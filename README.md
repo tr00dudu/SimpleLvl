@@ -41,6 +41,7 @@ Each element is designed to be simple, compact, and fit the wow theme asthetics.
 * `/sl ttswap` - swaps the tooltip (left > right)
 * `/sl scale <number>` - scales the frame to set amount
 * `/sl min` - toggles minimal mode (removes buttons and background elements)
+* `/sl announce` - toggles kill XP announcements in the center of screen
 
 
 ## Features
@@ -134,4 +135,9 @@ Each element is designed to be simple, compact, and fit the wow theme asthetics.
 <img src="Screenshots/killstats.png" width="250" float="left" align="left">
 <img src="Screenshots/queststats.png" width="250" float="center" align="center">
 <img src="Screenshots/timetolevel.png" width="250" float="center" align="center">
+
+Minimal Mode:
+
+![452790609-628cad4f-9f4b-4a88-b2eb-e915faa49ba3](https://github.com/user-attachments/assets/faea01b7-d98b-4a74-9ed3-07acf1a48db0)
+
 

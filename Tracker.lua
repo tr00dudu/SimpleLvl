@@ -50,6 +50,13 @@ local function InitializeTracker()
         end
     end)
 
+    -- Clean up existing frame if it exists
+    if _G[fn] then
+        _G[fn]:Hide()
+        _G[fn] = nil
+    end
+
+    Tracker.track = CreateFrame("Frame", fn, UIParent)
     Tracker.track:SetWidth(60)
     Tracker.track:SetHeight(130)
     Tracker.track:SetMovable(true)
@@ -76,9 +83,7 @@ local function InitializeTracker()
         end
     end)
 
-
     Tracker.track:SetScript("OnHide", function()
-
     end)
 
     Tracker.track:SetScript("OnMouseDown", function()
@@ -87,7 +92,6 @@ local function InitializeTracker()
 
     Tracker.track:SetScript("OnMouseUp", function()
         this:StopMovingOrSizing()
-
 
         local point, relativeTo, relativePoint, xOfs, yOfs = this:GetPoint()
         local parentName = "UIParent"
@@ -101,51 +105,93 @@ local function InitializeTracker()
         }
     end)
 
+    -- Only set backdrop if not in minimal mode
+    if not SLDatastore.data[SLProfile].Store.minimal then
+        Tracker.track:SetBackdrop({
+            bgFile = SL:GetTexture("Background"),
+            edgeFile = SL:GetTexture("Frame"),
+            tile = true,
+            tileSize = 128,
+            edgeSize = 32,
+            insets = {
+                left = 5,
+                right = 5,
+                top = 22,
+                bottom = 5
+            },
+        })
 
-    Tracker.track:SetBackdrop({
-        bgFile = SL:GetTexture("Background"),
-        edgeFile = SL:GetTexture("Frame"),
-        tile = true,
-        tileSize = 128,
-        edgeSize = 32,
-        insets = {
-            left = 5,
-            right = 5,
-            top = 22,
-            bottom = 5
-        },
-    })
+        local name = Tracker.track:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+        name:SetPoint("TOPLEFT", 0, -5)
+        name:SetWidth(37)
+        name:SetHeight(12)
+        name:SetJustifyH("CENTER")
+        name:SetText("SL")
+        Tracker.track.name = name
 
-    local name = Tracker.track:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-    name:SetPoint("TOPLEFT", 0, -5)
-    name:SetWidth(37)
-    name:SetHeight(12)
-    name:SetJustifyH("CENTER")
-    name:SetText("SL")
+        local close = CreateFrame("Button", fn .. "CloseButton", Tracker.track, "UIPanelCloseButton")
+        close:SetPoint("TOPRIGHT", Tracker.track, 4, 4)
+        close:SetScript("OnClick", function()
+            SLDatastore.data[SLProfile].Store.toggle = false
+            Tracker.track:Hide()
+        end)
+        Tracker.track.close = close
 
-    Tracker.track.name = name
+        local resize = CreateFrame("Button", fn .. "ResizeButton", Tracker.track, "UIPanelButtonTemplate")
+        resize:SetWidth(16)
+        resize:SetHeight(16)
+        resize:GetNormalTexture():SetTexture("Interface\\AddOns\\SimpleUI\\Media\\Textures\\ResizeGrip")
+        resize:GetHighlightTexture():SetTexture("Interface\\AddOns\\SimpleUI\\Media\\Textures\\ResizeGrip")
+        resize:GetPushedTexture():SetTexture("Interface\\AddOns\\SimpleUI\\Media\\Textures\\ResizeGrip")
+        resize:SetPoint("BOTTOMRIGHT", Tracker.track, "BOTTOMRIGHT", 0, -1)
 
-    local close = CreateFrame("Button", fn .. "CloseButton", Tracker.track, "UIPanelCloseButton")
-    close:SetPoint("TOPRIGHT", Tracker.track, 4, 4)
-    close:SetScript("OnClick", function()
-        SLDatastore.data[SLProfile].Store.toggle = false
-        Tracker.track:Hide()
-    end)
+        local savedScale = SLDatastore.data[SLProfile].Store.trackerScale
+        if savedScale then
+            Tracker.e:ScaleTracker(savedScale)
+        end
 
-    Tracker.track.close = close
+        resize:SetScript("OnMouseDown", function()
+            Tracker.e.isResizing = true
+            Tracker.e.startScale = Tracker.track:GetScale()
+            Tracker.e.startCursorX, Tracker.e.startCursorY = GetCursorPosition()
+        end)
+
+        resize:SetScript("OnMouseUp", function()
+            Tracker.e.isResizing = false
+        end)
+
+        resize:SetScript("OnUpdate", function()
+            if Tracker.e.isResizing then
+                local cursorX, cursorY = GetCursorPosition()
+                local diffX = cursorX - Tracker.e.startCursorX
+
+                -- Calculate new scale based on mouse movement
+                local newScale = math.max(0.5, math.min(3, Tracker.e.startScale + (diffX / 200)))
+                Tracker.e:ScaleTracker(newScale)
+                ShowSLMessage(string.format("Tracker scaled to %.1f.", newScale), 3)
+            end
+        end)
+    end
 
     local prevButton
-
-
     for i = 1, 4 do
         local button = CreateFrame("Button", fn .. "TrackerButton" .. bn[i], Tracker.track, "UIPanelButtonTemplate")
         button:SetWidth(45)
         button:SetHeight(20)
 
-        if i == 1 then
-            button:SetPoint("TOP", Tracker.track, "TOP", 2, -25)
+        -- Adjust button positions based on minimal mode
+        if SLDatastore.data[SLProfile].Store.minimal then
+            if i == 1 then
+                button:SetPoint("TOP", Tracker.track, "TOP", 0, 0)
+            else
+                button:SetPoint("TOP", prevButton, "BOTTOM", 0, -5)
+            end
         else
-            button:SetPoint("TOP", prevButton, "BOTTOM", 0, -5)
+            if i == 1 then
+                button:SetPoint("TOP", Tracker.track, "TOP", 2, -25)
+            else
+                button:SetPoint("TOP", prevButton, "BOTTOM", 0, -5)
+            end
         end
 
         prevButton = button
@@ -160,7 +206,6 @@ local function InitializeTracker()
         button.text:SetPoint("CENTER", 10, 0)
         button.text:SetJustifyH("RIGHT")
         button.text:SetText("N/A")
-
 
         if i == 1 then
             norm:SetTexture(SL:GetTexture("Button"))
@@ -195,9 +240,12 @@ local function InitializeTracker()
                                 Tracker.e:UpdateKillStats(gainedNum)
                                 Tracker.e:UpdateKills()
                                 Tracker.e:UpdateTimer(xpPerKill)
-                                ShowSLMessage(
-                                    string.format("%d XP gained, you need to kill %d more %s", gainedNum, killsToLvl,
-                                        unitName), 5)
+                                
+                                if SLDatastore.data[SLProfile].Store.announce then
+                                    ShowSLMessage(
+                                        string.format("%d XP gained, you need to kill %d more %s", gainedNum, killsToLvl,
+                                            unitName), 5)
+                                end
 
                                 button.text:SetText(killsToLvl)
                             end
@@ -386,7 +434,7 @@ local function InitializeTracker()
                     Tracker.e:ResetTracker()
                     ShowSLMessage("Tracker has been reset")
                 elseif arg1 == "RightButton" then
-                    SL:Print("/sl |cff1a9fc0toggle|r, |cff1a9fc0lock|r, |cff1a9fc0ttswap|r, |cff1a9fc0scale <number>|r, |cff1a9fc0min|r")
+                    SL:Print("/sl |cff1a9fc0toggle|r, |cff1a9fc0lock|r, |cff1a9fc0ttswap|r, |cff1a9fc0scale <number>|r, |cff1a9fc0min|r, |cff1a9fc0announce|r")
                 end
             end)
         end
@@ -395,41 +443,6 @@ local function InitializeTracker()
         button.texture:SetTexture(SL:GetTexture("Button"))
         button.texture:SetVertexColor(0.5, 0.4, 0, 1) ]]
     end
-
-    local resize = CreateFrame("Button", fn .. "ResizeButton", Tracker.track, "UIPanelButtonTemplate")
-    resize:SetWidth(16)
-    resize:SetHeight(16)
-    resize:GetNormalTexture():SetTexture("Interface\\AddOns\\SimpleUI\\Media\\Textures\\ResizeGrip")
-    resize:GetHighlightTexture():SetTexture("Interface\\AddOns\\SimpleUI\\Media\\Textures\\ResizeGrip")
-    resize:GetPushedTexture():SetTexture("Interface\\AddOns\\SimpleUI\\Media\\Textures\\ResizeGrip")
-    resize:SetPoint("BOTTOMRIGHT", Tracker.track, "BOTTOMRIGHT", 0, -1)
-
-    local savedScale = SLDatastore.data[SLProfile].Store.trackerScale
-    if savedScale then
-        Tracker.e:ScaleTracker(savedScale)
-    end
-
-    resize:SetScript("OnMouseDown", function()
-        Tracker.e.isResizing = true
-        Tracker.e.startScale = Tracker.track:GetScale()
-        Tracker.e.startCursorX, Tracker.e.startCursorY = GetCursorPosition()
-    end)
-
-    resize:SetScript("OnMouseUp", function()
-        Tracker.e.isResizing = false
-    end)
-
-    resize:SetScript("OnUpdate", function()
-        if Tracker.e.isResizing then
-            local cursorX, cursorY = GetCursorPosition()
-            local diffX = cursorX - Tracker.e.startCursorX
-
-            -- Calculate new scale based on mouse movement
-            local newScale = math.max(0.5, math.min(3, Tracker.e.startScale + (diffX / 200)))
-            Tracker.e:ScaleTracker(newScale)
-            ShowSLMessage(string.format("Tracker scaled to %.1f.", newScale), 3)
-        end
-    end)
 
     SLASH_SIMPLELVL1 = "/simplelvl"
     SLASH_SIMPLELVL2 = "/sl"
@@ -634,68 +647,14 @@ function Tracker.e.Commands(msg)
         ShowSLMessage("Tracker has been reset")
     elseif command == "min" then
         SLDatastore.data[SLProfile].Store.minimal = not SLDatastore.data[SLProfile].Store.minimal
-        Tracker.e:UpdateMinimalMode()
+        -- Recreate the frame to apply minimal mode changes
+        InitializeTracker()
         ShowSLMessage("Minimal mode " .. (SLDatastore.data[SLProfile].Store.minimal and "enabled" or "disabled"))
+    elseif command == "announce" then
+        SLDatastore.data[SLProfile].Store.announce = not SLDatastore.data[SLProfile].Store.announce
+        ShowSLMessage("Kill XP announcements " .. (SLDatastore.data[SLProfile].Store.announce and "enabled" or "disabled"))
     else
-        SL:Print("/sl |cff1a9fc0toggle|r, |cff1a9fc0lock|r, |cff1a9fc0ttswap|r, |cff1a9fc0scale <number>|r, |cff1a9fc0min|r")
-    end
-end
-
-function Tracker.e:UpdateMinimalMode()
-    if SLDatastore.data[SLProfile].Store.minimal then
-        -- Hide background elements
-        Tracker.track:SetBackdrop(nil)
-        Tracker.track.name:Hide()
-        Tracker.track.close:Hide()
-        _G[fn .. "ResizeButton"]:Hide()
-        
-        -- Adjust button positions for minimal mode
-        local prevButton
-        for i = 1, 4 do
-            local button = _G[fn .. "TrackerButton" .. bn[i]]
-            if button then
-                button:ClearAllPoints()
-                if i == 1 then
-                    button:SetPoint("TOP", Tracker.track, "TOP", 0, 0)
-                else
-                    button:SetPoint("TOP", prevButton, "BOTTOM", 0, -5)
-                end
-                prevButton = button
-            end
-        end
-    else
-        -- Restore normal mode
-        Tracker.track:SetBackdrop({
-            bgFile = SL:GetTexture("Background"),
-            edgeFile = SL:GetTexture("Frame"),
-            tile = true,
-            tileSize = 128,
-            edgeSize = 32,
-            insets = {
-                left = 5,
-                right = 5,
-                top = 22,
-                bottom = 5
-            },
-        })
-        Tracker.track.name:Show()
-        Tracker.track.close:Show()
-        _G[fn .. "ResizeButton"]:Show()
-        
-        -- Restore original button positions
-        local prevButton
-        for i = 1, 4 do
-            local button = _G[fn .. "TrackerButton" .. bn[i]]
-            if button then
-                button:ClearAllPoints()
-                if i == 1 then
-                    button:SetPoint("TOP", Tracker.track, "TOP", 2, -25)
-                else
-                    button:SetPoint("TOP", prevButton, "BOTTOM", 0, -5)
-                end
-                prevButton = button
-            end
-        end
+        SL:Print("/sl |cff1a9fc0toggle|r, |cff1a9fc0lock|r, |cff1a9fc0ttswap|r, |cff1a9fc0scale <number>|r, |cff1a9fc0min|r, |cff1a9fc0announce|r")
     end
 end
 
