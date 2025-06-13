@@ -138,6 +138,7 @@ Each element is designed to be simple, compact, and fit the wow theme asthetics.
 
 Minimal Mode:
 
-![452790609-628cad4f-9f4b-4a88-b2eb-e915faa49ba3](https://github.com/user-attachments/assets/faea01b7-d98b-4a74-9ed3-07acf1a48db0)
+![image](https://github.com/user-attachments/assets/f142f71d-62e0-4bea-98ed-d7c01a2ea1f3)
+
 
 
