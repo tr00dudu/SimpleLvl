@@ -14,6 +14,29 @@ local questsToLvl = 0;
 local killsPerHour = 0
 local questsPerHour = 0
 
+-- Add rolling average tracking
+local killXPHistory = {}
+local questXPHistory = {}
+local MAX_HISTORY = 10  -- Track last 10 kills/quests
+
+local function updateRollingAverage(history, newValue)
+    table.insert(history, newValue)
+    local count = table.getn(history)
+    
+    if count > MAX_HISTORY then
+        table.remove(history, 1)
+        count = MAX_HISTORY
+    end
+    
+    local sum = 0
+    for i = 1, count do
+        sum = sum + history[i]
+    end
+    
+    local average = sum / count
+    return average
+end
+
 local bn = {
     [1] = "Kills",
     [2] = "Quests",
@@ -181,20 +204,27 @@ local function InitializeTracker()
 
         -- Adjust button positions based on minimal mode
         if SLDatastore.data[SLProfile].Store.minimal then
+            -- In minimal mode, only show first and last buttons
             if i == 1 then
                 button:SetPoint("TOP", Tracker.track, "TOP", 0, 0)
-            else
+                button:Show()
+                prevButton = button  -- Keep track of first button for time button
+            elseif i == 4 then
                 button:SetPoint("TOP", prevButton, "BOTTOM", 0, -5)
+                button:Show()
+            else
+                button:Hide()
             end
         else
+            -- Normal mode, show all buttons
             if i == 1 then
                 button:SetPoint("TOP", Tracker.track, "TOP", 2, -25)
             else
                 button:SetPoint("TOP", prevButton, "BOTTOM", 0, -5)
             end
+            button:Show()
+            prevButton = button
         end
-
-        prevButton = button
 
         local norm = button:GetNormalTexture()
         local highlight = button:GetHighlightTexture()
@@ -229,17 +259,11 @@ local function InitializeTracker()
                         if unitName and gainedStr then
                             local gainedNum = tonumber(gainedStr)
                             if gainedNum then
-                                local restedXP = GetXPExhaustion() or 0
-                                local gainedRest = 0
-
-                                if restedXP > 0 then
-                                    gainedRest = math.min(gainedNum, restedXP)
-                                end
                                 killsThisSession = killsThisSession + 1
-                                xpPerKill = gainedNum + gainedRest
+                                xpPerKill = updateRollingAverage(killXPHistory, gainedNum)
                                 Tracker.e:UpdateKillStats(gainedNum)
                                 Tracker.e:UpdateKills()
-                                Tracker.e:UpdateTimer(xpPerKill)
+                                Tracker.e:UpdateTimer(gainedNum)
                                 
                                 if SLDatastore.data[SLProfile].Store.announce then
                                     ShowSLMessage(
@@ -253,12 +277,13 @@ local function InitializeTracker()
                     end
                 end
             end)
-            --UIErrorsFrame:AddMessage("Hello, World!", 1, 0, 0, 1, 3)
 
             button:SetScript("OnEnter", function()
                 Tracker.e:UpdateTooltip(button)
                 GameTooltip:SetText("|cff1a9fc0Kill Stats|r")
                 GameTooltip:AddLine(" ")
+                GameTooltip:AddDoubleLine(SL.util.Colorize("Average XP per Kill:", 1, 1, 0.5),
+                    SL.util.Colorize(math.floor(xpPerKill), 0.8, 0, 0), 1, 1, 1)
                 GameTooltip:AddDoubleLine(SL.util.Colorize("Kills This Session:", 1, 1, 0.5),
                     SL.util.Colorize(killsThisSession, 0.8, 0, 0), 1, 1, 1)
                 GameTooltip:AddDoubleLine(SL.util.Colorize("Kills/Hour:", 1, 1, 0.5),
@@ -293,7 +318,7 @@ local function InitializeTracker()
                             local gainedNum = tonumber(gainedStr)
                             if gainedNum then
                                 questsThisSession = questsThisSession + 1
-                                xpPerQuest = gainedNum
+                                xpPerQuest = updateRollingAverage(questXPHistory, gainedNum)
                                 Tracker.e:UpdateQuestStats()
                                 Tracker.e:UpdateQuests()
                                 Tracker.e:UpdateTimer(gainedNum)
@@ -528,11 +553,6 @@ function Tracker.e:UpdateExperience(button)
     local needed = math.floor(maxXP - currXP)
     local perc = math.floor((currXP / maxXP) * 100)
     local barsLeft = 20 - math.floor(perc / 5)
-    local restedXP = GetXPExhaustion()
-    local restedPerc
-    if restedXP ~= nil then
-        restedPerc = math.floor((restedXP / maxXP) * 100)
-    end
     Tracker.e:UpdateTooltip(button)
     GameTooltip:SetText("|cff1a9fc0Experience|r")
     GameTooltip:AddLine(" ")
@@ -541,10 +561,6 @@ function Tracker.e:UpdateExperience(button)
         GameTooltip:AddDoubleLine(SL.util.Colorize("Needed", 1, 1, 0.5), needed, 1, 1, 1)
         GameTooltip:AddDoubleLine(SL.util.Colorize("Pecent", 1, 1, 0.5), SL.util.Colorize("[" .. perc .. "%]", 0, 0.9, 1),
             1, 1, 1)
-        if restedXP ~= nil then
-            GameTooltip:AddDoubleLine(SL.util.Colorize("Rested", 1, 1, 0.5),
-                SL.util.Colorize(restedXP .. " [" .. restedPerc .. "%]", 0, 0.9, 1), 1, 1, 1)
-        end
         GameTooltip:AddLine(" ")
         GameTooltip:AddDoubleLine(SL.util.Colorize("Bars", 1, 1, 0.5), barsLeft, 1, 1, 1)
     end
@@ -594,9 +610,12 @@ function Tracker.e:ResetTracker()
     questsToLvl = 0
     killsPerHour = 0
     questsPerHour = 0
+    
+    -- Clear history
+    killXPHistory = {}
+    questXPHistory = {}
 
     self:InitializeTimer()
-
 
     for i = 1, 4 do
         local button = _G[fn .. "TrackerButton" .. bn[i]]
@@ -649,6 +668,21 @@ function Tracker.e.Commands(msg)
         SLDatastore.data[SLProfile].Store.minimal = not SLDatastore.data[SLProfile].Store.minimal
         -- Recreate the frame to apply minimal mode changes
         InitializeTracker()
+        -- Update button visibility
+        for i = 1, 4 do
+            local button = _G[fn .. "TrackerButton" .. bn[i]]
+            if button then
+                if SLDatastore.data[SLProfile].Store.minimal then
+                    if i == 1 or i == 4 then
+                        button:Show()
+                    else
+                        button:Hide()
+                    end
+                else
+                    button:Show()
+                end
+            end
+        end
         ShowSLMessage("Minimal mode " .. (SLDatastore.data[SLProfile].Store.minimal and "enabled" or "disabled"))
     elseif command == "announce" then
         SLDatastore.data[SLProfile].Store.announce = not SLDatastore.data[SLProfile].Store.announce
@@ -659,6 +693,12 @@ function Tracker.e.Commands(msg)
 end
 
 function SLLoadTracker()
+    -- Check if character is level 60
+    if UnitLevel("player") >= 60 then
+        SL:Print("SimpleLvl disabled - Character is level 60")
+        return
+    end
+    
     InitializeTracker()
     -- Apply minimal mode if it was enabled
     if SLDatastore.data[SLProfile].Store.minimal then
@@ -668,6 +708,14 @@ end
 
 Tracker.e:RegisterEvent("PLAYER_ENTERING_WORLD")
 Tracker.e:SetScript("OnEvent", function()
+    -- Check if character is level 60
+    if UnitLevel("player") >= 60 then
+        if Tracker.track then
+            Tracker.track:Hide()
+        end
+        return
+    end
+    
     this:InitializeTimer()
 end)
 --SL.InitTrack = InitializeTracker
