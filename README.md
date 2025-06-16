@@ -1,4 +1,4 @@
-<p>This is a fork of original SimpleLvl addon, that introduces a more compact mode (with /sl min) and fixes a bug with parsing rested xp.</p>
+<p>This is a fork of original SimpleLvl addon, that introduces a more compact mode (with /sl min) and fixes a bug with parsing rested xp gains.</p>
 
 ![image](https://github.com/user-attachments/assets/f142f71d-62e0-4bea-98ed-d7c01a2ea1f3)
 
