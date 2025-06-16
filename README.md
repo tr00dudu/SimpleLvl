@@ -1,3 +1,15 @@
+<p>This is a fork of original SimpleLvl addon, that introduces a more compact mode (with /sl min) and fixes a bug with parsing rested xp.</p>
+
+![image](https://github.com/user-attachments/assets/f142f71d-62e0-4bea-98ed-d7c01a2ea1f3)
+
+#### New Commands
+* `/sl min` - toggles minimal mode (removes buttons and background elements)
+* `/sl announce` - toggles kill XP announcements in the center of screen
+
+<br>
+<p>Original description below:</p>
+
+<hr>
 <h1>
     <img src="Screenshots/title.png" width="304" align="left" alt="SimpleLvl">
     <div width="100%">&nbsp;</div>
@@ -40,9 +52,6 @@ Each element is designed to be simple, compact, and fit the wow theme asthetics.
 * `/sl lock` - locks tracker in place
 * `/sl ttswap` - swaps the tooltip (left > right)
 * `/sl scale <number>` - scales the frame to set amount
-* `/sl min` - toggles minimal mode (removes buttons and background elements)
-* `/sl announce` - toggles kill XP announcements in the center of screen
-
 
 ## Features
 
@@ -135,10 +144,4 @@ Each element is designed to be simple, compact, and fit the wow theme asthetics.
 <img src="Screenshots/killstats.png" width="250" float="left" align="left">
 <img src="Screenshots/queststats.png" width="250" float="center" align="center">
 <img src="Screenshots/timetolevel.png" width="250" float="center" align="center">
-
-Minimal Mode:
-
-![image](https://github.com/user-attachments/assets/f142f71d-62e0-4bea-98ed-d7c01a2ea1f3)
-
-
 
