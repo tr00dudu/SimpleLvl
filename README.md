@@ -3,7 +3,7 @@
 ![image](https://github.com/user-attachments/assets/f142f71d-62e0-4bea-98ed-d7c01a2ea1f3)
 
 #### New Commands
-* `/sl min` - toggles minimal mode (removes buttons and background elements)
+* `/sl min` - toggles minimal mode (removes buttons, middle two trackers, and background elements)
 * `/sl announce` - toggles kill XP announcements in the center of screen
 
 <br>
